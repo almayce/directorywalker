@@ -1,0 +1,76 @@
+group 'dev.almayce'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'kotlin'
+apply plugin: 'io.qameta.allure'
+
+sourceCompatibility = 1.8
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+        }
+    }
+    main.kotlin.srcDirs = ['src']
+}
+
+buildscript {
+
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.10"
+        classpath "io.qameta.allure:allure-gradle:+"
+    }
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:1.3.10"
+
+    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.12'
+    compile group: 'io.qameta.allure', name: 'allure-java-commons', version: '2.7.0'
+    compile group: 'com.codeborne', name: 'selenide', version: '5.0.1'
+    compile group: 'org.json', name: 'json', version: '20180813' // edit json
+
+    // video recorder / encoder
+    compile group: 'com.automation-remarks', name: 'video-recorder-core', version: '1.7'
+    compile group: 'com.automation-remarks', name: 'video-recorder-junit', version: '1.7'
+    compile group: 'net.bramp.ffmpeg', name: 'ffmpeg', version: '0.6.2'
+}
+
+tasks.withType(Test) {
+    systemProperty "host", System.getProperty("host", "qa")
+    systemProperty "containers", System.getProperty("containers", "true")
+}
+
+allure {
+    version = '2.7.0'
+    autoconfigure = true
+    aspectjweaver = true
+    useJUnit5 {
+        version = '2.7.0'
+    }
+}
+
+compileJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
