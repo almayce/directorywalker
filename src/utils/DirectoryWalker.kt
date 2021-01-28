@@ -5,15 +5,21 @@ import java.io.FileNotFoundException
 
 class DirectoryWalker(private var root: String?) {
 
-    constructor() : this(null)
+    var walkerFile = File(javaClass.protectionDomain.codeSource.location.file).parentFile
+
+    public constructor() : this(null)
+
+    fun parentDir() : DirectoryWalker {
+        walkerFile = walkerFile.parentFile
+        return this
+    }
 
     fun findByRelativePath(relativePath: String): File {
 
         root?.let { root = replaceSeparator(root!!) }
         val separatedEndOfPath = replaceSeparator(relativePath)
 
-        val projectDir = File(javaClass.protectionDomain.codeSource.location.file).parentFile
-        val rootDir = projectDir.path + (root ?: "")
+        val rootDir = walkerFile.path + (root ?: "")
 
         File(rootDir).walkTopDown().forEach {
             if (it.path.contains(separatedEndOfPath))
